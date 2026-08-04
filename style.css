@@ -278,6 +278,39 @@ a {
   flex-shrink: 0;
 }
 
+/* ── 敷き絵 ─────────────────────────────────────
+   工房の一枚絵を画面いっぱいに固定し、ページのスクロール量に合わせて
+   background-position を 0%→100% まで動かす。こうすると「ページ全体を
+   スクロールし終えたとき、絵も上から下まで見終わっている」状態になる。
+   縦に動く余地を作るため、画像は画面の高さの170%に拡大して敷く */
+.bgflower {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('assets/bg_flower.webp');
+  background-repeat: no-repeat;
+  background-size: auto 170%;
+  background-position: 50% var(--bgy, 0%);
+  opacity: 0.2;
+}
+
+/* 本文が絵に負けないよう、墨のスクリムを重ねる。
+   中央（文章が来る帯）を濃く、上下端を薄くして、絵の存在は残す */
+.bgflower::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 17, 13, 0.2) 0%,
+      rgba(20, 17, 13, 0.72) 22%,
+      rgba(20, 17, 13, 0.72) 78%,
+      rgba(20, 17, 13, 0.2) 100%
+    );
+}
+
 /* ── 花びら ─────────────────────────────────────── */
 .petals {
   position: fixed;
@@ -874,6 +907,16 @@ body[data-season='winter'] { background-color: #14171a; }
     gap: 44px;
   }
 
+  /* 狭い画面では本文が画面いっぱいに広がるので、敷き絵のスクリムも全幅を覆う。
+     絵の明るい部分に文章が重なっても読めるようにするため */
+  .bgflower {
+    opacity: 0.17;
+  }
+
+  .bgflower::after {
+    background: rgba(20, 17, 13, 0.66);
+  }
+
   .heading {
     gap: 12px;
   }
@@ -892,6 +935,11 @@ body[data-season='winter'] { background-color: #14171a; }
   .curtain__flower {
     animation: none;
     transition: none;
+  }
+
+  /* 敷き絵は動かさず中央で止める（スクロール追従が酔いの原因になりうるため） */
+  .bgflower {
+    background-position: 50% 50%;
   }
 
   /* 立ち上がりの演出も止める。止めたまま見えないと本末転倒なので必ず可視にする */
