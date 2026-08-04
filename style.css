@@ -914,6 +914,98 @@ body[data-season='autumn'] { background-color: #1e1610; }
 body[data-season='winter'] { background-color: #14171a; }
 
 /* ── 肆：登場人物 ─────────────────────────────────── */
+
+/* 主役2人の大きいカード（酉花・イズナ） */
+.chara-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 2.5vw, 24px);
+  margin-bottom: clamp(28px, 5vw, 44px);
+}
+
+.chara-card {
+  display: flex;
+  gap: clamp(14px, 2vw, 20px);
+  padding: clamp(16px, 2.5vw, 24px);
+  background: rgba(42, 35, 26, 0.5);
+  border: 1px solid rgba(201, 162, 74, 0.4);
+  border-radius: 3px;
+}
+
+.chara-card img {
+  width: clamp(110px, 12vw, 150px);
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  border: 1px solid rgba(201, 162, 74, 0.3);
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(42, 35, 26, 0.85), rgba(20, 17, 13, 0.85));
+}
+
+.chara-card__role {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--shu-light);
+  margin-bottom: 4px;
+}
+
+.chara-card__body h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+  color: var(--kin-light);
+  margin: 0 0 8px;
+}
+
+.chara-card__body p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.85;
+}
+
+/* 里ごとの小見出し。季節チップの配色はゲーム内の話しかけヒントと同じ
+   （春=ピンク／夏=青／秋=黄／冬=緑） */
+.chara-village {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  color: var(--kinari);
+  margin: clamp(28px, 5vw, 40px) 0 14px;
+}
+
+.chara-village span {
+  font-size: 0.8em;
+  line-height: 1.7;
+  padding: 1px 11px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.chara-village[data-season='spring'] span { color: #e88aa8; border-color: rgba(232, 138, 168, 0.6); }
+.chara-village[data-season='summer'] span { color: #6fb1d8; border-color: rgba(111, 177, 216, 0.6); }
+.chara-village[data-season='autumn'] span { color: #d8b24a; border-color: rgba(216, 178, 74, 0.6); }
+.chara-village[data-season='winter'] span { color: #7cbf8e; border-color: rgba(124, 191, 142, 0.6); }
+
+/* 見出しの右に細罫を伸ばす（.headingと同じ意匠の弱い版） */
+.chara-village::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 162, 74, 0.3), transparent);
+}
+
+.chara-bio {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.75;
+  color: var(--muted);
+  text-align: left;
+}
 .chara-grid {
   list-style: none;
   margin: 0;
@@ -1156,6 +1248,15 @@ body[data-season='winter'] { background-color: #14171a; }
     grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
   }
 
+  /* 里ごとの3人組は狭い画面でも3列を保つ（1人だけ下に落ちると里の区切りが崩れる） */
+  .chara-grid--bio {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .chara-main {
+    grid-template-columns: 1fr;
+  }
+
   .season,
   .season:nth-child(even) {
     grid-template-columns: 1fr;
@@ -1211,11 +1312,17 @@ body[data-season='winter'] { background-color: #14171a; }
     display: none;
   }
 
-  /* 幕開けはJS側で丸ごと出さないが、万一残っても動かないようにしておく */
-  .curtain,
-  .curtain__flower {
+  /* ローディング画面自体は出す（進捗を伝える意味のある表示）。
+     花の呼吸・花びらの飛散などの装飾の動きだけ止める */
+  .curtain__flower,
+  .curtain.is-bursting .curtain__burst span {
     animation: none;
-    transition: none;
+  }
+
+  /* 見出しは「フェードのみ」で出す（縦の移動は止める） */
+  .will-reveal {
+    transform: none;
+    transition: opacity 0.7s ease;
   }
 
   /* 敷き絵は動かさず中央で止める（スクロール追従が酔いの原因になりうるため） */
