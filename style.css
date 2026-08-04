@@ -742,15 +742,16 @@ body.is-ready .petals span {
   color: var(--muted);
 }
 
-/* セーブの注意書き。ゲーム枠の直下に静かに置く */
+/* セーブの注意書き。ゲーム枠の直下。読み飛ばされると困る情報なので大きめ・太字（2026-08-05） */
 .play__save-note {
   margin: 12px 0 0;
-  padding: 10px 16px;
-  font-size: 0.82rem;
-  line-height: 1.8;
-  color: var(--muted);
-  background: rgba(201, 162, 74, 0.06);
-  border: 1px solid rgba(201, 162, 74, 0.22);
+  padding: 14px 20px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 2;
+  color: var(--kinari);
+  background: rgba(201, 162, 74, 0.1);
+  border: 1px solid rgba(201, 162, 74, 0.45);
   border-radius: 3px;
 }
 
