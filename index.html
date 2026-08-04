@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>トリッカフラワー 公式サイト 〜花咲く忍の里〜</title>
+    <meta
+      name="description"
+      content="畑で生薬を育て、調合して、四つの里のみんなに薬を届けるブラウザゲーム「トリッカフラワー」の公式サイト。ページ内でそのまま遊べます。"
+    />
+
+    <!-- OGP。og:image はゲーム側で既に配信されている1200x630をそのまま指す
+         （公開ドメインが変わっても画像は生きるため）。
+         🔴 og:url だけは公式ページのURLが確定したら書き換えること -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="トリッカフラワー" />
+    <meta property="og:title" content="トリッカフラワー 〜花咲く忍の里〜" />
+    <meta
+      property="og:description"
+      content="畑で生薬を育て、調合して、四つの里のみんなに薬を届けるブラウザゲーム。ページ内でそのまま遊べます。"
+    />
+    <meta property="og:url" content="https://torika-flower-sfc.vercel.app/" />
+    <meta property="og:image" content="https://torika-flower-sfc.vercel.app/ogp.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- JSが無効・失敗しても、幕が下りたまま／本文が透明のまま取り残されないようにする -->
+    <noscript>
+      <style>
+        .curtain { display: none !important; }
+        .petals span { opacity: 0.34 !important; animation: petal-fall linear infinite !important; }
+        .season { opacity: 1 !important; transform: none !important; }
+      </style>
+    </noscript>
+  </head>
+
+  <body>
+    <!-- ── 幕開け（初回訪問のみ） ──────────────────────
+         四季が一巡して夜に沈み、開ききった花が8枚の花びらに割れて散る。
+         散った花びらは、そのままページ常設の花びら（.petals）へ引き継がれる。
+         読み込みが終わり次第すぐ抜ける／同一セッション2回目以降は出さない -->
+    <div class="curtain" id="curtain" aria-hidden="true">
+      <div class="curtain__flower" id="curtainFlower">🌸</div>
+      <div class="curtain__season" id="curtainSeason">春</div>
+      <div class="curtain__burst" id="curtainBurst">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <p class="curtain__skip">画面をクリックで とばす</p>
+    </div>
+
+    <!-- 舞い散る花びら。装飾のみなのでaria-hiddenで読み上げから外す -->
+    <div class="petals" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- ── 常設ヘッダー ────────────────────────────
+         四季セクションでスクロール量が増えたぶん、どこにいても1クリックで
+         ゲームへ戻れるようプレイボタンを常駐させる（本人指示・2026-08-04） -->
+    <div class="topbar" id="topbar">
+      <a class="topbar__home" href="#top">トリッカフラワー</a>
+      <a class="topbar__play btn btn--shu" href="#play">▶ 遊ぶ</a>
+    </div>
+
+    <!-- ── 扁額（ヒーロー） ────────────────────────── -->
+    <header class="hero" id="top">
+      <div class="hero__plaque">
+        <img
+          class="hero__logo"
+          src="assets/logo.png"
+          alt="トリッカフラワー 〜花咲く忍の里〜"
+          width="1654"
+          height="672"
+        />
+        <p class="hero__lead">
+          畑で生薬（しょうやく）を育て、調合して、<br />
+          四つの里のみんなに薬を届ける。
+        </p>
+        <a class="btn btn--shu" href="#play">▶ ゲームをはじめる</a>
+        <p class="hero__note">ブラウザでそのまま遊べます／登録不要・無料</p>
+      </div>
+    </header>
+
+    <main>
+      <!-- ── 壱：遊ぶ ──────────────────────────── -->
+      <section class="section" id="play">
+        <h2 class="heading"><span class="heading__num">壱</span>遊ぶ</h2>
+
+        <div class="play">
+          <div class="play__frame" id="playFrame">
+            <iframe
+              id="gameFrame"
+              src="https://torika-flower-sfc.vercel.app/"
+              title="トリッカフラワー"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="play__bar">
+            <p class="play__hint">
+              画面を一度クリックしてから、矢印キー／WASDで移動・Spaceで調べる。
+            </p>
+            <button class="btn btn--kin" type="button" id="fsBtn">⛶ 全画面で遊ぶ</button>
+          </div>
+        </div>
+
+        <!-- スマホ用。ゲームは畑・採取・調合がSpaceキー専用のため、
+             タップだけでは中核の遊びが回らない。遊べないことを最初に正直に伝える -->
+        <div class="mobile-note">
+          <p class="mobile-note__title">スマートフォンでご覧の方へ</p>
+          <p>
+            このゲームは<strong>キーボード操作が必要</strong>です。種まき・収穫・調合はSpaceキーでしか行えないため、
+            スマホでは遊びきることができません。<br />
+            パソコンでこのページを開いていただくと、そのまま遊べます。
+          </p>
+          <p class="mobile-note__sub">下のキャラクター紹介は、スマホでもご覧いただけます。</p>
+        </div>
+      </section>
+
+      <!-- ── 弐：どんなゲーム？ ────────────────────── -->
+      <section class="section">
+        <h2 class="heading"><span class="heading__num">弐</span>どんなゲーム？</h2>
+        <p class="section__lead">
+          舞台は、四季それぞれの忍の里。主人公の酉花（トリカ）は、里をめぐる小さなお薬屋さんです。
+        </p>
+
+        <ol class="steps">
+          <li class="step">
+            <img src="assets/howto/step2.webp" alt="種の聖域で種を集める場面" loading="lazy" />
+            <div class="step__body">
+              <span class="step__no">STEP 1</span>
+              <h3>種を採りに行く</h3>
+              <p>里の鳥居をくぐると「種の聖域」へ。光る採取スポットで、生薬の種を集めます。</p>
+            </div>
+          </li>
+          <li class="step">
+            <img src="assets/howto/step3.webp" alt="畑に種を植えて育てる場面" loading="lazy" />
+            <div class="step__body">
+              <span class="step__no">STEP 2</span>
+              <h3>畑で育てて収穫する</h3>
+              <p>採ってきた種を里の畑へ。じっくり育ったら収穫して、生薬メダルを蓄えます。</p>
+            </div>
+          </li>
+          <li class="step">
+            <img src="assets/howto/step4.webp" alt="工房でお薬を調合して届ける場面" loading="lazy" />
+            <div class="step__body">
+              <span class="step__no">STEP 3</span>
+              <h3>調合して、届ける</h3>
+              <p>
+                工房の調合台で漢方の処方を組み立て、症状に合うお薬を届けます。里の悩みを解くと、次の季節への門がひらきます。
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <p class="section__foot">
+          登場する処方は、実在する漢方薬をもとにしています。遊びながら「どの生薬が、どの処方に入るのか」が手ざわりで残るように作りました。
+        </p>
+      </section>
+
+      <!-- ── 参：四季をめぐる ────────────────────
+           幕開けで見せた「四季が一巡する」を、本編でもう一度ゆっくり歩かせる。
+           スクロールで里が入れ替わり、背景の色もその季節へ寄っていく -->
+      <section class="section section--seasons">
+        <h2 class="heading"><span class="heading__num">参</span>四季をめぐる</h2>
+        <p class="section__lead">
+          里は四つ。春から始まり、悩みを解くたびに次の季節への門がひらきます。
+        </p>
+
+        <div class="seasons">
+          <article class="season" data-season="spring">
+            <img src="assets/season/spring.webp" alt="春の里（甲賀の里）のゲーム画面" loading="lazy" />
+            <div class="season__body">
+              <span class="season__kanji">春</span>
+              <h3>甲賀の里</h3>
+              <p>
+                すべてが始まる季節。桜の下で畑を耕し、はじめてのお薬を調合します。眠れない夜、季節の変わり目の不調——最初の依頼はここから。
+              </p>
+            </div>
+          </article>
+
+          <article class="season" data-season="summer">
+            <img src="assets/season/summer.webp" alt="夏の里（風魔の里）のゲーム画面" loading="lazy" />
+            <div class="season__body">
+              <span class="season__kanji">夏</span>
+              <h3>風魔の里</h3>
+              <p>
+                照りつける日差しと、こもる熱。汗をかきすぎて力が出ない体を立て直す処方を届けに、新しい顔ぶれのいる里へ。
+              </p>
+            </div>
+          </article>
+
+          <article class="season" data-season="autumn">
+            <img src="assets/season/autumn.webp" alt="秋の里（雑賀の里）のゲーム画面" loading="lazy" />
+            <div class="season__body">
+              <span class="season__kanji">秋</span>
+              <h3>雑賀の里</h3>
+              <p>
+                乾いた風が喉をいためる季節。咳とうるおいをめぐる生薬が増え、畑で育てるものも変わっていきます。
+              </p>
+            </div>
+          </article>
+
+          <article class="season" data-season="winter">
+            <img src="assets/season/winter.webp" alt="冬の里（伊賀の里）のゲーム画面" loading="lazy" />
+            <div class="season__body">
+              <span class="season__kanji">冬</span>
+              <h3>伊賀の里</h3>
+              <p>
+                底冷えの里。体の芯からあたためる処方で、最後の依頼まで届けきったとき、酉花の一年がひとめぐりします。
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── 肆：登場人物 ──────────────────────── -->
+      <section class="section">
+        <h2 class="heading"><span class="heading__num">肆</span>登場人物</h2>
+        <p class="section__lead">
+          四つの里で出会う14人。話しかけると、それぞれの体の悩みを打ち明けてくれます。
+        </p>
+
+        <ul class="chara-grid">
+          <li><img src="assets/face/torika.webp" alt="酉花（トリカ）" loading="lazy" /><span>酉花（トリカ）</span></li>
+          <li><img src="assets/face/izuna.webp" alt="イズナ" loading="lazy" /><span>イズナ</span></li>
+          <li><img src="assets/face/sakuya.webp" alt="咲耶（サクヤ）" loading="lazy" /><span>咲耶（サクヤ）</span></li>
+          <li><img src="assets/face/xiaolan.webp" alt="シャオラン" loading="lazy" /><span>シャオラン</span></li>
+          <li><img src="assets/face/nemu.webp" alt="ネム" loading="lazy" /><span>ネム</span></li>
+          <li><img src="assets/face/janome.webp" alt="蛇ノ目（ジャノメ）" loading="lazy" /><span>蛇ノ目（ジャノメ）</span></li>
+          <li><img src="assets/face/aum.webp" alt="アウン" loading="lazy" /><span>アウン</span></li>
+          <li><img src="assets/face/ibuki.webp" alt="イブキ" loading="lazy" /><span>イブキ</span></li>
+          <li><img src="assets/face/shiba.webp" alt="柴（シバ）" loading="lazy" /><span>柴（シバ）</span></li>
+          <li><img src="assets/face/nekomata.webp" alt="猫又（ねこまた）" loading="lazy" /><span>猫又（ねこまた）</span></li>
+          <li><img src="assets/face/benten.webp" alt="弁天（べんてん）" loading="lazy" /><span>弁天（べんてん）</span></li>
+          <li><img src="assets/face/anne.webp" alt="餡音（あんね）" loading="lazy" /><span>餡音（あんね）</span></li>
+          <li><img src="assets/face/yui.webp" alt="結（ゆい）" loading="lazy" /><span>結（ゆい）</span></li>
+          <li><img src="assets/face/hayate.webp" alt="ハヤテ" loading="lazy" /><span>ハヤテ</span></li>
+        </ul>
+
+        <p class="section__foot">
+          その人の依頼をすべて叶えると、ゲーム内のギャラリーに一枚絵がひらきます。何が出るかは、届けきった人だけのお楽しみに。
+        </p>
+      </section>
+
+      <!-- ── 伍：作った人 ──────────────────────── -->
+      <section class="section" id="author">
+        <h2 class="heading"><span class="heading__num">伍</span>作った人</h2>
+
+        <div class="author">
+          <div class="author__name">
+            <span class="author__label">CREATED BY</span>
+            <span class="author__ja">アースキー</span>
+            <span class="author__en">EarthKey</span>
+          </div>
+          <p class="author__text">
+            現役の病院薬剤師をしながら、AIで作れるものを作っています。<br />
+            このゲームは「生薬と漢方を、遊びながら手ざわりで覚えられたら」という思いつきから、
+            NinjaDAOのキャラクターたちに登場してもらって形にしました。
+          </p>
+
+          <ul class="links">
+            <li>
+              <a href="https://x.com/EarthGigantea" target="_blank" rel="noopener noreferrer">
+                <span class="links__icon">𝕏</span>
+                <span class="links__body">
+                  <strong>X（旧Twitter）</strong>
+                  <small>@EarthGigantea ／ ふだんの発信はこちら</small>
+                </span>
+                <span class="links__arrow">↗</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://earthkey.substack.com/" target="_blank" rel="noopener noreferrer">
+                <span class="links__icon">📮</span>
+                <span class="links__body">
+                  <strong>Substack</strong>
+                  <small>earthkey.substack.com ／ 医療とAIの読みもの</small>
+                </span>
+                <span class="links__arrow">↗</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://earthkey-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer">
+                <span class="links__icon">🌐</span>
+                <span class="links__body">
+                  <strong>ポートフォリオ</strong>
+                  <small>earthkey-portfolio.vercel.app ／ 作ったものの一覧</small>
+                </span>
+                <span class="links__arrow">↗</span>
+              </a>
+            </li>
+            <!-- 教材（CryptoNinjaキャラ再現GPTs／プロンプト）が公開できたら、
+                 このコメントの位置に同じ形のli要素を1つ足すだけで並びます -->
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>
+        登場キャラクターは
+        <a href="https://www.ninja-dao.com/" target="_blank" rel="noopener noreferrer">CryptoNinja</a>
+        ／
+        <a href="https://www.cryptoninja-partners.xyz/" target="_blank" rel="noopener noreferrer"
+          >CryptoNinja Partners</a
+        >
+        の二次創作です。
+      </p>
+      <p class="footer__small">
+        ゲーム内に登場する漢方の処方は実在の医薬品を題材にしていますが、本作は娯楽作品であり、医学的な助言ではありません。
+      </p>
+      <p class="footer__small">© 2026 アースキー</p>
+    </footer>
+
+    <script>
+      // ── 全画面ボタン ──────────────────────────────
+      // iframeそのものを全画面にする（枠ごと拡大するとゲームが枠内に留まるため）
+      var fsBtn = document.getElementById('fsBtn')
+      var frame = document.getElementById('gameFrame')
+      fsBtn.addEventListener('click', function () {
+        if (frame.requestFullscreen) frame.requestFullscreen()
+        else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen()
+        else alert('お使いのブラウザは全画面表示に対応していないようです。')
+      })
+
+      // ── 幕開け ────────────────────────────────
+      // 春→夏→秋→冬と一巡してから墨に沈み、花が8枚に割れて散る。
+      // 設計上いちばん大事なのは「演出のために待たせない」こと。
+      //   ・読み込みのたびに出すが、クリック／タップ／キーでいつでも飛ばせる
+      //     （当初は同一セッション1回だけにしていたが、リロードで見返せず
+      //       制作中に確認できないため、2026-08-04にスキップ方式へ変更）
+      //   ・動きを減らす設定の人には出さない
+      //   ・読み込みが遅れても最長2.0秒で必ず打ち切る（白画面に閉じ込めない）
+      ;(function () {
+        var curtain = document.getElementById('curtain')
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+        if (reduce) {
+          curtain.parentNode.removeChild(curtain)
+          document.body.classList.add('is-ready')
+          return
+        }
+
+        var flower = document.getElementById('curtainFlower')
+        var label = document.getElementById('curtainSeason')
+        var SEASONS = ['spring', 'summer', 'autumn', 'winter']
+        var KANJI = ['春', '夏', '秋', '冬']
+        var STEP = 380 // 1季節あたり。4つで1.52秒（背景色の遷移0.2sが到着しきる長さ）
+        var i = 0
+
+        curtain.dataset.season = SEASONS[0]
+
+        var timer = setInterval(function () {
+          i++
+          if (i >= SEASONS.length) {
+            clearInterval(timer)
+            finish()
+            return
+          }
+          curtain.dataset.season = SEASONS[i]
+          label.textContent = KANJI[i]
+          // 季節が替わるたびに花をひと呼吸させる（クラスを付け直して再生）
+          flower.classList.remove('is-beat')
+          void flower.offsetWidth
+          flower.classList.add('is-beat')
+        }, STEP)
+
+        var done = false
+        function finish() {
+          if (done) return
+          done = true
+          clearInterval(timer)
+          // 夜に沈む → 花が割れて散る
+          curtain.dataset.season = 'night'
+          curtain.classList.add('is-sinking')
+          setTimeout(function () {
+            curtain.classList.add('is-bursting')
+          }, 340)
+          setTimeout(function () {
+            curtain.classList.add('is-gone')
+            document.body.classList.add('is-ready') // 散った花びらを受け取ってページ側が舞い始める
+          }, 780)
+          setTimeout(function () {
+            if (curtain.parentNode) curtain.parentNode.removeChild(curtain)
+          }, 1600)
+        }
+
+        // いつでも飛ばせるようにする。急いでいる人を演出に閉じ込めない
+        curtain.addEventListener('click', finish)
+        curtain.addEventListener('touchstart', finish, { passive: true })
+        window.addEventListener('keydown', finish, { once: true })
+        // 「押せば飛ばせる」ことは、少し経ってから静かに知らせる
+        setTimeout(function () {
+          if (!done) curtain.classList.add('is-skippable')
+        }, 700)
+
+        window.setTimeout(finish, 2000) // 保険。何があっても2秒で開ける
+      })()
+
+      // ── 四季セクション：見えている里の季節をページ全体へ反映 ──
+      ;(function () {
+        var seasons = document.querySelectorAll('.season')
+        if (!seasons.length) return
+        if (!('IntersectionObserver' in window)) {
+          // 未対応ブラウザでは演出を諦めて、必ず全部表示する（透明のまま残さない）
+          seasons.forEach(function (s) {
+            s.classList.add('is-in')
+          })
+          return
+        }
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting) return
+              e.target.classList.add('is-in')
+              document.body.dataset.season = e.target.dataset.season
+            })
+          },
+          { threshold: 0.4 },
+        )
+        seasons.forEach(function (s) {
+          io.observe(s)
+        })
+      })()
+
+      // ── 常設ヘッダー：ヒーローを過ぎたら地の色を濃くする ──
+      ;(function () {
+        var bar = document.getElementById('topbar')
+        var onScroll = function () {
+          bar.classList.toggle('is-solid', window.scrollY > 120)
+        }
+        window.addEventListener('scroll', onScroll, { passive: true })
+        onScroll()
+      })()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,913 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   トリッカフラワー 公式サイト
+   デザイン方針: 和・夜・墨＋金＋朱。行灯のともる夜の扁額。
+   色はゲーム内HUDの実値をそのまま持ってきているので、ページとゲームで同じ金が光る。
+   書体だけは既存LP（earthkey-portfolio）と共有し、作者の手ざわりを揃える。
+   ========================================================================== */
+
+:root {
+  /* 墨（背景） */
+  --sumi-950: #14110d;
+  --sumi-900: #1c1813;
+  --sumi-800: #2a231a;
+
+  /* 金（ゲームHUDと同一値） */
+  --kin: #c9a24a;
+  --kin-light: #ffe9a8;
+  --kinari: #f2e6c8;
+  --muted: #a89468;
+
+  /* 朱 */
+  --shu: #b8432e;
+  --shu-light: #d15a42;
+
+  --font-display: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+  --font-body: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+
+  --wrap: 1040px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--sumi-950);
+  /* 和紙の質感。粗い斑点を2枚重ねて、のっぺりした単色を避ける */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(201, 162, 74, 0.07), transparent 42%),
+    radial-gradient(circle at 82% 78%, rgba(184, 67, 46, 0.06), transparent 46%),
+    repeating-linear-gradient(
+      112deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 5px
+    );
+  color: var(--kinari);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.9;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--kin-light);
+}
+
+/* ── 幕開け ─────────────────────────────────────
+   春→夏→秋→冬と背景が一巡し、墨に沈んでから花が8枚に割れて散る。
+   散った花びらをページ側の .petals が受け取る（body.is-ready で舞い始める）。
+   季節の色は data-season 属性で切り替える。JSは属性を書き換えるだけ */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vh, 40px);
+  background: var(--sumi-950);
+  /* 切り替え間隔(380ms)より短くしないと、色が到着する前に次の季節へ動いてしまい
+     「新緑の背景に秋の札」のようなズレが起きる（2026-08-04修正） */
+  transition: background-color 0.2s ease, opacity 0.5s ease;
+  /* 季節ごとの光の色。背景が明るい季節は金の光が飛ぶので、その季節の濃い色を使う */
+  --glow: rgba(255, 233, 168, 0.85);
+  --ink: rgba(20, 17, 13, 0.55);
+}
+
+.curtain[data-season='spring'] { background-color: #e9b7c6; --glow: rgba(140, 40, 70, 0.42);  } /* 桜色 */
+.curtain[data-season='summer'] { background-color: #6f9e58; --glow: rgba(20, 60, 20, 0.42);   } /* 新緑 */
+.curtain[data-season='autumn'] { background-color: #b45a2a; --glow: rgba(80, 24, 8, 0.45);    } /* 紅 */
+.curtain[data-season='winter'] { background-color: #dfe4e6; --glow: rgba(40, 60, 80, 0.34);   } /* 雪の白 */
+.curtain[data-season='night']  {
+  background-color: var(--sumi-950);
+  --glow: rgba(255, 233, 168, 0.9);
+  --ink: rgba(242, 230, 200, 0.75);
+}
+
+.curtain__flower {
+  font-size: clamp(130px, 26vw, 280px);
+  line-height: 1;
+  /* 行灯のようににじむ光。ただ拡大縮小するより和の夜に合う（案3から拝借）。
+     光の色は季節に追従させる（明るい背景で金が消えてしまうため） */
+  filter: drop-shadow(0 0 30px var(--glow)) drop-shadow(0 0 72px var(--glow));
+  animation: flower-breathe 1.6s ease-in-out infinite;
+  transition: transform 0.34s cubic-bezier(0.2, 0.7, 0.3, 1), opacity 0.28s ease,
+    filter 0.32s ease;
+}
+
+/* 季節が替わった瞬間のひと呼吸 */
+.curtain__flower.is-beat {
+  animation: flower-breathe 1.6s ease-in-out infinite, flower-beat 0.33s ease-out;
+}
+
+@keyframes flower-breathe {
+  0%, 100% { transform: scale(1);    opacity: 0.92; }
+  50%      { transform: scale(1.07); opacity: 1;    }
+}
+
+@keyframes flower-beat {
+  0%   { transform: scale(1.16); }
+  100% { transform: scale(1);    }
+}
+
+/* 季節の漢字。花の下に小さく置く。枠は本文の見出し番号（壱弐参）と同じ意匠にして、
+   幕開けとページ本編を同じ視覚言語でつなぐ */
+.curtain__season {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 2.6vw, 1.24rem);
+  line-height: 1.7;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em; /* letter-spacingで右にずれる分を戻す */
+  color: var(--ink);
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 3px 16px;
+  user-select: none;
+  pointer-events: none;
+  transition: color 0.32s ease;
+}
+
+/* 沈む: 花が一度大きく開いてから消える */
+.curtain.is-sinking .curtain__flower {
+  transform: scale(1.5);
+  animation: none;
+}
+
+.curtain.is-sinking .curtain__season {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* 花は中央に置いたまま散らせたいので、下の季節ラベル分のズレを打ち消す */
+.curtain__burst {
+  transform: translateY(-1.4em);
+}
+
+/* スキップの案内。最初から出すと演出より先に目に入るので、少し遅れて静かに現れる */
+.curtain__skip {
+  position: absolute;
+  bottom: clamp(24px, 6vh, 54px);
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.6s ease, color 0.2s ease;
+  pointer-events: none;
+}
+
+.curtain.is-skippable .curtain__skip {
+  opacity: 0.85;
+}
+
+.curtain.is-sinking .curtain__skip {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* 幕そのものを押せるようにする */
+.curtain {
+  cursor: pointer;
+}
+
+.curtain.is-bursting .curtain__flower {
+  transform: scale(1.9);
+  opacity: 0;
+}
+
+/* 割れて散る8枚。ページ常設の花びらと同じ数・同じ形 */
+.curtain__burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.curtain__burst span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 19px;
+  margin: -9px 0 0 -8px;
+  background: #e8a9be;
+  border-radius: 60% 40% 55% 45% / 70% 60% 40% 30%;
+  opacity: 0;
+}
+
+.curtain.is-bursting .curtain__burst span {
+  animation: petal-burst 0.9s cubic-bezier(0.15, 0.6, 0.3, 1) forwards;
+}
+
+.curtain__burst span:nth-child(1) { --bx: -46vw; --by: -30vh; --br: -300deg; }
+.curtain__burst span:nth-child(2) { --bx: -26vw; --by: -46vh; --br:  220deg; }
+.curtain__burst span:nth-child(3) { --bx:  20vw; --by: -44vh; --br: -260deg; }
+.curtain__burst span:nth-child(4) { --bx:  44vw; --by: -24vh; --br:  340deg; }
+.curtain__burst span:nth-child(5) { --bx:  48vw; --by:  22vh; --br: -220deg; }
+.curtain__burst span:nth-child(6) { --bx:  22vw; --by:  44vh; --br:  300deg; }
+.curtain__burst span:nth-child(7) { --bx: -24vw; --by:  42vh; --br: -340deg; }
+.curtain__burst span:nth-child(8) { --bx: -48vw; --by:  18vh; --br:  260deg; }
+
+@keyframes petal-burst {
+  0%   { opacity: 0;    transform: translate(0, 0) rotate(0deg) scale(0.5); }
+  18%  { opacity: 0.95; }
+  100% { opacity: 0;    transform: translate(var(--bx), var(--by)) rotate(var(--br)) scale(1); }
+}
+
+.curtain.is-gone {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── 常設ヘッダー ───────────────────────────────── */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px clamp(14px, 3vw, 28px);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease;
+}
+
+.topbar.is-solid {
+  background: rgba(20, 17, 13, 0.86);
+  border-bottom-color: rgba(201, 162, 74, 0.28);
+  backdrop-filter: blur(10px) saturate(120%);
+}
+
+.topbar__home {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.86rem, 2.4vw, 1rem);
+  letter-spacing: 0.04em;
+  color: var(--kin-light);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* サイト名はヒーローに大きく出ているので、通り過ぎてから出す */
+.topbar.is-solid .topbar__home {
+  opacity: 1;
+}
+
+/* .btn より後ろに書かれた指定に負けないよう、詳細度を1つ上げる */
+.topbar .topbar__play {
+  font-size: 0.88rem;
+  padding: 7px 20px;
+  flex-shrink: 0;
+}
+
+/* ── 花びら ─────────────────────────────────────── */
+.petals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.petals span {
+  position: absolute;
+  top: -6vh;
+  width: 11px;
+  height: 13px;
+  background: #e8a9be;
+  opacity: 0;
+  /* 花びららしい非対称の丸み */
+  border-radius: 60% 40% 55% 45% / 70% 60% 40% 30%;
+  animation-play-state: paused;
+  transition: opacity 0.8s ease;
+}
+
+/* 幕開けで散った8枚を受け取って、ここから舞い始める */
+body.is-ready .petals span {
+  opacity: 0.34;
+  animation: petal-fall linear infinite;
+  animation-play-state: running;
+}
+
+.petals span:nth-child(1) { left: 6%;  animation-duration: 19s; animation-delay: 0s;   }
+.petals span:nth-child(2) { left: 19%; animation-duration: 25s; animation-delay: -4s;  }
+.petals span:nth-child(3) { left: 33%; animation-duration: 21s; animation-delay: -9s;  }
+.petals span:nth-child(4) { left: 47%; animation-duration: 28s; animation-delay: -2s;  }
+.petals span:nth-child(5) { left: 61%; animation-duration: 23s; animation-delay: -13s; }
+.petals span:nth-child(6) { left: 74%; animation-duration: 26s; animation-delay: -6s;  }
+.petals span:nth-child(7) { left: 86%; animation-duration: 20s; animation-delay: -16s; }
+.petals span:nth-child(8) { left: 95%; animation-duration: 30s; animation-delay: -11s; }
+
+@keyframes petal-fall {
+  0% {
+    transform: translateY(-6vh) translateX(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(112vh) translateX(-90px) rotate(420deg);
+  }
+}
+
+/* ── 扁額（ヒーロー） ─────────────────────────────── */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: clamp(40px, 8vw, 92px) 20px clamp(28px, 5vw, 56px);
+  display: flex;
+  justify-content: center;
+}
+
+.hero__plaque {
+  position: relative;
+  width: 100%;
+  max-width: var(--wrap);
+  padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 48px) clamp(32px, 5vw, 52px);
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201, 162, 74, 0.13), transparent 62%),
+    rgba(28, 24, 19, 0.72);
+  border: 1px solid rgba(201, 162, 74, 0.42);
+  border-radius: 4px;
+  /* 扁額の二重罫。外側の細枠を疑似要素で内側にもう1本引く */
+  box-shadow:
+    inset 0 0 0 6px rgba(20, 17, 13, 0.9),
+    inset 0 0 0 7px rgba(201, 162, 74, 0.24),
+    0 18px 60px rgba(0, 0, 0, 0.55);
+}
+
+.hero__logo {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  filter: drop-shadow(0 8px 26px rgba(0, 0, 0, 0.6));
+}
+
+.hero__lead {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.4vw, 1.32rem);
+  line-height: 2;
+  color: var(--kinari);
+  margin: clamp(18px, 3vw, 30px) 0 clamp(22px, 3.5vw, 34px);
+}
+
+.hero__note {
+  margin: 14px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ── ボタン ─────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  padding: 14px 40px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.btn--shu {
+  color: #fff5ee;
+  background: linear-gradient(180deg, var(--shu-light), var(--shu));
+  border: 1px solid rgba(255, 233, 168, 0.5);
+  box-shadow: 0 6px 22px rgba(184, 67, 46, 0.38);
+}
+
+.btn--shu:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(184, 67, 46, 0.5);
+}
+
+.btn--kin {
+  color: var(--kin-light);
+  background: rgba(201, 162, 74, 0.1);
+  border: 1px solid var(--kin);
+  font-size: 0.95rem;
+  padding: 11px 26px;
+}
+
+.btn--kin:hover {
+  background: rgba(201, 162, 74, 0.22);
+}
+
+/* ── セクション共通 ───────────────────────────────── */
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 88px) 20px;
+  /* 常設ヘッダーの下に見出しが潜り込まないよう、アンカー移動時の余白を確保 */
+  scroll-margin-top: 64px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+  font-weight: 700;
+  color: var(--kin-light);
+  margin: 0 0 clamp(20px, 3vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* 見出しの右へ金の細罫を伸ばす。区切り線を別要素にせず見出しと一体で見せる */
+.heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 162, 74, 0.55), transparent);
+}
+
+.heading__num {
+  font-size: 0.78em;
+  color: var(--shu-light);
+  border: 1px solid rgba(184, 67, 46, 0.6);
+  border-radius: 2px;
+  padding: 1px 11px;
+  line-height: 1.7;
+  flex-shrink: 0;
+}
+
+.section__lead {
+  margin: 0 0 clamp(22px, 4vw, 36px);
+  color: var(--kinari);
+}
+
+.section__foot {
+  margin: clamp(24px, 4vw, 36px) 0 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(201, 162, 74, 0.2);
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* ── 壱：遊ぶ ───────────────────────────────────── */
+.play__frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border: 1px solid rgba(201, 162, 74, 0.45);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+}
+
+.play__frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.play__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.play__hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.mobile-note {
+  display: none; /* 狭い画面でのみ出す */
+  margin-top: 22px;
+  padding: 20px 22px;
+  background: rgba(184, 67, 46, 0.09);
+  border: 1px solid rgba(184, 67, 46, 0.45);
+  border-radius: 3px;
+  font-size: 0.93rem;
+  line-height: 1.9;
+}
+
+.mobile-note p {
+  margin: 0 0 10px;
+}
+
+.mobile-note p:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-note__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--kin-light);
+}
+
+.mobile-note__sub {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+/* ── 弐：どんなゲーム？ ───────────────────────────── */
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3vw, 30px);
+}
+
+.step {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) 1fr;
+  gap: clamp(18px, 3vw, 32px);
+  align-items: center;
+  padding: clamp(16px, 2.5vw, 24px);
+  background: rgba(42, 35, 26, 0.42);
+  border: 1px solid rgba(201, 162, 74, 0.22);
+  border-radius: 3px;
+}
+
+/* 偶数番目は画像と文章を入れ替え、上から下へ視線がジグザグに流れるようにする */
+.step:nth-child(even) {
+  grid-template-columns: 1fr minmax(0, 380px);
+}
+
+.step:nth-child(even) img {
+  order: 2;
+}
+
+.step img {
+  border-radius: 2px;
+  border: 1px solid rgba(201, 162, 74, 0.3);
+}
+
+.step__no {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  color: var(--shu-light);
+  margin-bottom: 6px;
+}
+
+.step__body h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.12rem, 2.6vw, 1.35rem);
+  color: var(--kin-light);
+  margin: 0 0 8px;
+}
+
+.step__body p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--kinari);
+}
+
+/* ── 参：四季をめぐる ──────────────────────────────
+   1つの里につき画面をおおよそ1つ分使い、スクロールでめぐらせる。
+   見えている里の季節を body[data-season] に反映し、背景の光の色をその季節へ寄せる */
+.seasons {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 12vh, 130px);
+}
+
+.season {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(20px, 3.5vw, 42px);
+  align-items: center;
+  min-height: 62vh;
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.season.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* 偶数の里は左右を入れ替え、めぐっている感じを出す */
+.season:nth-child(even) {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+}
+
+.season:nth-child(even) img {
+  order: 2;
+}
+
+.season img {
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid rgba(201, 162, 74, 0.32);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.5);
+}
+
+.season__body {
+  position: relative;
+}
+
+/* 季節の漢字を大きく薄く敷き、その上に里の名を置く */
+.season__kanji {
+  position: absolute;
+  top: -0.34em;
+  left: -0.1em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(90px, 15vw, 180px);
+  line-height: 1;
+  color: rgba(201, 162, 74, 0.1);
+  pointer-events: none;
+  user-select: none;
+}
+
+.season__body h3 {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3.4vw, 1.8rem);
+  color: var(--kin-light);
+  margin: 0 0 12px;
+}
+
+.season__body p {
+  position: relative;
+  margin: 0;
+  font-size: 0.96rem;
+}
+
+/* 見ている里の季節に応じて、背景の光だけをその季節の色へ寄せる。
+   面の色は墨のまま動かさない（読みやすさを壊さないため） */
+body {
+  transition: background-color 0.9s ease;
+}
+
+body[data-season='spring'] { background-color: #1d1418; }
+body[data-season='summer'] { background-color: #141a13; }
+body[data-season='autumn'] { background-color: #1e1610; }
+body[data-season='winter'] { background-color: #14171a; }
+
+/* ── 肆：登場人物 ─────────────────────────────────── */
+.chara-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: clamp(12px, 2vw, 20px);
+}
+
+.chara-grid li {
+  text-align: center;
+}
+
+/* ゲーム内の顔グラ（透過ドット絵）。3:4の透過キャンバスへ下寄せで揃えてあるので、
+   ここでは背景の札を敷いて等倍で並べるだけでよい。
+   image-rendering: pixelated を付けないとドットが眠くなる */
+.chara-grid img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border: 1px solid rgba(201, 162, 74, 0.3);
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(42, 35, 26, 0.85), rgba(20, 17, 13, 0.85));
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.chara-grid li:hover img {
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--kin);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55);
+}
+
+.chara-grid span {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ── 肆：作った人 ─────────────────────────────────── */
+.author {
+  padding: clamp(24px, 4vw, 38px);
+  background: rgba(28, 24, 19, 0.72);
+  border: 1px solid rgba(201, 162, 74, 0.32);
+  border-radius: 3px;
+}
+
+.author__name {
+  margin-bottom: 16px;
+}
+
+.author__label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+
+.author__ja {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 700;
+  color: var(--kin-light);
+  line-height: 1.4;
+}
+
+.author__en {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.author__text {
+  margin: 0 0 24px;
+  font-size: 0.97rem;
+}
+
+.links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.links a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 13px 18px;
+  text-decoration: none;
+  color: var(--kinari);
+  background: rgba(255, 233, 168, 0.05);
+  border: 1px solid rgba(201, 162, 74, 0.3);
+  border-radius: 3px;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.links a:hover {
+  background: rgba(255, 233, 168, 0.13);
+  border-color: var(--kin);
+  transform: translateX(4px);
+}
+
+.links__icon {
+  font-size: 1.3rem;
+  width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.links__body {
+  min-width: 0;
+}
+
+.links__body strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--kin-light);
+}
+
+.links__body small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.links__arrow {
+  margin-left: auto;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ── フッター ───────────────────────────────────── */
+.footer {
+  position: relative;
+  z-index: 1;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 52px) 20px clamp(44px, 7vw, 72px);
+  border-top: 1px solid rgba(201, 162, 74, 0.2);
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.footer p {
+  margin: 0 0 8px;
+}
+
+.footer__small {
+  font-size: 0.78rem;
+  line-height: 1.8;
+}
+
+/* ── レスポンシブ（既存LPと同じ768px） ────────────────── */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+
+  /* スマホではキーボードが無く遊べないので、埋め込みを出さずに案内へ差し替える。
+     読み込みも走らせない（display:noneでもiframeは読むためHTML側でも軽くしてある） */
+  .play__frame,
+  .play__bar {
+    display: none;
+  }
+
+  .mobile-note {
+    display: block;
+    margin-top: 0;
+  }
+
+  .step,
+  .step:nth-child(even) {
+    grid-template-columns: 1fr;
+  }
+
+  .step:nth-child(even) img {
+    order: 0;
+  }
+
+  .chara-grid {
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  }
+
+  .season,
+  .season:nth-child(even) {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .season:nth-child(even) img {
+    order: 0;
+  }
+
+  .seasons {
+    gap: 44px;
+  }
+
+  .heading {
+    gap: 12px;
+  }
+}
+
+/* 動きを減らす設定の人には花びらを止める */
+@media (prefers-reduced-motion: reduce) {
+  .petals span,
+  body.is-ready .petals span {
+    animation: none;
+    display: none;
+  }
+
+  /* 幕開けはJS側で丸ごと出さないが、万一残っても動かないようにしておく */
+  .curtain,
+  .curtain__flower {
+    animation: none;
+    transition: none;
+  }
+
+  /* 立ち上がりの演出も止める。止めたまま見えないと本末転倒なので必ず可視にする */
+  .season {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  body {
+    transition: none;
+  }
+
+  .btn,
+  .links a,
+  .chara-grid img {
+    transition: none;
+  }
+}

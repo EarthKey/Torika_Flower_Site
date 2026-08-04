@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- ブラウザタブのアイコン（2026-07-26本人指示で🌸へ変更）。
+       Vite初期状態の紫ロゴから差し替え。絵文字を文字として描く方式なので、
+       画像ファイルを別途用意しなくてよく、どの解像度でも綺麗に出る -->
+  <text x="50" y="54" font-size="86" text-anchor="middle" dominant-baseline="central">🌸</text>
+</svg>
