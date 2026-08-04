@@ -156,6 +156,50 @@ a {
   transform: translateY(-1.4em);
 }
 
+/* ローディング表示（進捗バー＋%）。色は季節の --ink に追従する */
+.curtain__load {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.25s ease;
+}
+
+.curtain.is-sinking .curtain__load {
+  opacity: 0;
+}
+
+.curtain__bar {
+  width: min(320px, 62vw);
+  height: 7px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(20, 17, 13, 0.14);
+}
+
+.curtain__bar-fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(201, 162, 74, 0.9), #ffe9a8);
+}
+
+.curtain[data-season='night'] .curtain__bar-fill {
+  box-shadow: 0 0 12px rgba(255, 233, 168, 0.8);
+}
+
+.curtain__load-text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+
 /* スキップの案内。最初から出すと演出より先に目に入るので、少し遅れて静かに現れる */
 .curtain__skip {
   position: absolute;
@@ -269,6 +313,54 @@ a {
 /* サイト名はヒーローに大きく出ているので、通り過ぎてから出す */
 .topbar.is-solid .topbar__home {
   opacity: 1;
+}
+
+/* セクション通し番号ナビ。番号チップは本文の見出し番号（壱弐参…）と同じ意匠 */
+.topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 auto; /* 中央寄せ。左=サイト名／右=遊ぶボタンの間に置く */
+}
+
+.topbar__nav a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  text-decoration: none;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 3px;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.topbar__nav a:hover {
+  color: var(--kin-light);
+  background: rgba(255, 233, 168, 0.07);
+}
+
+.topbar__num {
+  font-size: 0.7rem;
+  line-height: 1.6;
+  color: var(--shu-light);
+  border: 1px solid rgba(184, 67, 46, 0.6);
+  border-radius: 2px;
+  padding: 0 6px;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+/* 見ているセクションの番号を点す */
+.topbar__nav a.is-active {
+  color: var(--kin-light);
+}
+
+.topbar__nav a.is-active .topbar__num {
+  background: var(--shu);
+  border-color: var(--shu-light);
+  color: #fff5ee;
 }
 
 /* .btn より後ろに書かれた指定に負けないよう、詳細度を1つ上げる */
@@ -494,6 +586,19 @@ body.is-ready .petals span {
   border-top: 1px solid rgba(201, 162, 74, 0.2);
   font-size: 0.92rem;
   color: var(--muted);
+}
+
+/* スクロール出現（見出し・リード文）。will-revealはJSが付けるので、
+   JS無効・IO非対応・reduced-motionでは最初から見えている */
+.will-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.will-reveal.is-shown {
+  opacity: 1;
+  transform: none;
 }
 
 /* ── イメージPV ─────────────────────────────────
@@ -947,6 +1052,57 @@ body[data-season='winter'] { background-color: #14171a; }
   flex-shrink: 0;
 }
 
+/* 教材の宣伝枠。他の3リンクは控えめのまま、この1件だけ行灯のように光らせる */
+.links__promo a {
+  background: linear-gradient(90deg, rgba(201, 162, 74, 0.16), rgba(184, 67, 46, 0.12));
+  border-color: var(--kin);
+  box-shadow: 0 0 18px rgba(201, 162, 74, 0.22);
+  animation: promo-glow 2.6s ease-in-out infinite;
+}
+
+.links__promo a:hover {
+  background: linear-gradient(90deg, rgba(201, 162, 74, 0.26), rgba(184, 67, 46, 0.18));
+  box-shadow: 0 0 28px rgba(201, 162, 74, 0.4);
+}
+
+.links__promo .links__body strong {
+  color: #ffe9a8;
+}
+
+.links__promo .links__body small {
+  color: #c4b088;
+}
+
+.links__badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #fff5ee;
+  background: var(--shu);
+  border-radius: 2px;
+  padding: 3px 9px;
+}
+
+/* バッジがあるときは矢印のautoマージンを外す（両方autoだと間延びする） */
+.links__promo .links__arrow {
+  margin-left: 0;
+  color: var(--kin);
+}
+
+@keyframes promo-glow {
+  0%, 100% { box-shadow: 0 0 14px rgba(201, 162, 74, 0.18); }
+  50%      { box-shadow: 0 0 26px rgba(201, 162, 74, 0.38); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .links__promo a {
+    animation: none;
+  }
+}
+
 /* ── フッター ───────────────────────────────────── */
 .footer {
   position: relative;
@@ -1012,6 +1168,24 @@ body[data-season='winter'] { background-color: #14171a; }
 
   .seasons {
     gap: 44px;
+  }
+
+  /* 狭い画面ではナビは番号チップだけ残す（サイト名はヒーローにあるので隠す） */
+  .topbar__home {
+    display: none;
+  }
+
+  .topbar__label {
+    display: none;
+  }
+
+  .topbar__nav {
+    gap: 0;
+    margin: 0;
+  }
+
+  .topbar__nav a {
+    padding: 6px 5px;
   }
 
   /* 狭い画面では本文が画面いっぱいに広がるので、敷き絵のスクリムも全幅を覆う。

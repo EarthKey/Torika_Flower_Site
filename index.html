@@ -56,6 +56,12 @@
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
       </div>
+      <!-- ローディング表示（2026-08-04本人指示）。実際の読み込み進捗と連動し、
+           進捗が進むほど季節がめぐる（〜33%春／〜66%夏／〜95%秋／それ以上冬→100%で夜） -->
+      <div class="curtain__load">
+        <div class="curtain__bar"><span class="curtain__bar-fill" id="curtainBar"></span></div>
+        <p class="curtain__load-text"><span id="curtainPct">0%</span>　ローディング中…</p>
+      </div>
       <p class="curtain__skip">画面をクリックで とばす</p>
     </div>
 
@@ -75,6 +81,15 @@
          ゲームへ戻れるようプレイボタンを常駐させる（本人指示・2026-08-04） -->
     <div class="topbar" id="topbar">
       <a class="topbar__home" href="#top">トリッカフラワー</a>
+      <!-- セクション通し番号ナビ（2026-08-04本人指示・参考: osushi-san.com）。
+           番号の意匠は本文の見出し番号（壱弐参…）と同じ。狭い画面では番号チップだけ残す -->
+      <nav class="topbar__nav" aria-label="ページ内メニュー">
+        <a href="#play" data-nav="play"><span class="topbar__num">壱</span><span class="topbar__label">遊ぶ</span></a>
+        <a href="#about" data-nav="about"><span class="topbar__num">弐</span><span class="topbar__label">どんなゲーム？</span></a>
+        <a href="#seasons" data-nav="seasons"><span class="topbar__num">参</span><span class="topbar__label">四季</span></a>
+        <a href="#chara" data-nav="chara"><span class="topbar__num">肆</span><span class="topbar__label">登場人物</span></a>
+        <a href="#author" data-nav="author"><span class="topbar__num">伍</span><span class="topbar__label">作った人</span></a>
+      </nav>
       <a class="topbar__play btn btn--shu" href="#play">▶ 遊ぶ</a>
     </div>
 
@@ -175,7 +190,7 @@
       </section>
 
       <!-- ── 弐：どんなゲーム？ ────────────────────── -->
-      <section class="section">
+      <section class="section" id="about">
         <h2 class="heading"><span class="heading__num">弐</span>どんなゲーム？</h2>
         <p class="section__lead">
           舞台は、四季それぞれの忍の里。主人公の酉花（トリカ）は、里をめぐる小さなお薬屋さんです。
@@ -218,7 +233,7 @@
       <!-- ── 参：四季をめぐる ────────────────────
            幕開けで見せた「四季が一巡する」を、本編でもう一度ゆっくり歩かせる。
            スクロールで里が入れ替わり、背景の色もその季節へ寄っていく -->
-      <section class="section section--seasons">
+      <section class="section section--seasons" id="seasons">
         <h2 class="heading"><span class="heading__num">参</span>四季をめぐる</h2>
         <p class="section__lead">
           里は四つ。春から始まり、悩みを解くたびに次の季節への門がひらきます。
@@ -272,7 +287,7 @@
       </section>
 
       <!-- ── 肆：登場人物 ──────────────────────── -->
-      <section class="section">
+      <section class="section" id="chara">
         <h2 class="heading"><span class="heading__num">肆</span>登場人物</h2>
         <p class="section__lead">
           四つの里で出会う14人。話しかけると、それぞれの体の悩みを打ち明けてくれます。
@@ -347,13 +362,15 @@
                 <span class="links__arrow">↗</span>
               </a>
             </li>
-            <li>
+            <!-- 教材は宣伝枠として1件だけ強調（2026-08-04本人指示）。増やして全部を光らせない -->
+            <li class="links__promo">
               <a href="https://brmk.io/rnmJcc" target="_blank" rel="noopener noreferrer">
                 <span class="links__icon">📖</span>
                 <span class="links__body">
                   <strong>クリプトニンジャAI創作スターターキット</strong>
                   <small>Brain教材 ／ このゲームのキャラたちをAIで再現する入口</small>
                 </span>
+                <span class="links__badge">教材</span>
                 <span class="links__arrow">↗</span>
               </a>
             </li>
@@ -374,6 +391,15 @@
       </p>
       <p class="footer__small">
         ゲーム内に登場する漢方の処方は実在の医薬品を題材にしていますが、本作は娯楽作品であり、医学的な助言ではありません。
+      </p>
+      <p class="footer__small">
+        教材の販売はBrainの販売ページ上で行われます ／
+        <a
+          href="https://earthkey-portfolio.vercel.app/legal/tokutei.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          >特定商取引法に基づく表記</a
+        >
       </p>
       <p class="footer__small">© 2026 アースキー</p>
     </footer>
@@ -407,14 +433,16 @@
         video.addEventListener('play', hide)
       })()
 
-      // ── 幕開け ────────────────────────────────
-      // 春→夏→秋→冬と一巡してから墨に沈み、花が8枚に割れて散る。
+      // ── 幕開け＝ローディング画面（2026-08-04本人指示で進捗連動へ改修） ──
+      // 🌸が呼吸しながら「ローディング中…＋進捗バー＋%」を出し、実際の読み込みと連動して
+      // 進捗が進むほど季節がめぐる（〜33%春／〜66%夏／〜95%秋／それ以上冬）。
+      // 100%で夜に沈み、花が8枚に割れて散ってページ本編へ。
+      // 進捗の作り: 読み込み完了前はゆっくり90%まで進む見せかけ進捗（バーが止まると
+      // 故障に見えるため）。window.load が来たら目標を100%にして一気に満ちる。
       // 設計上いちばん大事なのは「演出のために待たせない」こと。
-      //   ・読み込みのたびに出すが、クリック／タップ／キーでいつでも飛ばせる
-      //     （当初は同一セッション1回だけにしていたが、リロードで見返せず
-      //       制作中に確認できないため、2026-08-04にスキップ方式へ変更）
+      //   ・クリック／タップ／キーでいつでも飛ばせる
       //   ・動きを減らす設定の人には出さない
-      //   ・読み込みが遅れても最長2.0秒で必ず打ち切る（白画面に閉じ込めない）
+      //   ・回線が遅くても最長4秒で必ず打ち切る（ローディングに閉じ込めない）
       ;(function () {
         var curtain = document.getElementById('curtain')
         var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -427,33 +455,53 @@
 
         var flower = document.getElementById('curtainFlower')
         var label = document.getElementById('curtainSeason')
+        var bar = document.getElementById('curtainBar')
+        var pct = document.getElementById('curtainPct')
         var SEASONS = ['spring', 'summer', 'autumn', 'winter']
         var KANJI = ['春', '夏', '秋', '冬']
-        var STEP = 380 // 1季節あたり。4つで1.52秒（背景色の遷移0.2sが到着しきる長さ）
-        var i = 0
+        var seasonIdx = 0
 
         curtain.dataset.season = SEASONS[0]
 
-        var timer = setInterval(function () {
-          i++
-          if (i >= SEASONS.length) {
-            clearInterval(timer)
-            finish()
-            return
+        // 実際の読み込み完了の検知
+        var loadDone = document.readyState === 'complete'
+        window.addEventListener('load', function () {
+          loadDone = true
+        })
+
+        var prog = 0 // 表示中の進捗
+        var target = 0 // 進捗の目標値
+        function tick() {
+          if (done) return
+          target = loadDone ? 100 : Math.min(90, target + 0.9)
+          prog += (target - prog) * 0.14
+          if (prog > 99.4) prog = 100
+          bar.style.width = prog + '%'
+          pct.textContent = Math.round(prog) + '%'
+
+          // 進捗に応じて季節をめぐらせる
+          var idx = prog >= 95 ? 3 : prog >= 66 ? 2 : prog >= 33 ? 1 : 0
+          if (idx !== seasonIdx) {
+            seasonIdx = idx
+            curtain.dataset.season = SEASONS[idx]
+            label.textContent = KANJI[idx]
+            // 季節が替わる瞬間、花をひと呼吸させる（クラスを付け直して再生）
+            flower.classList.remove('is-beat')
+            void flower.offsetWidth
+            flower.classList.add('is-beat')
           }
-          curtain.dataset.season = SEASONS[i]
-          label.textContent = KANJI[i]
-          // 季節が替わるたびに花をひと呼吸させる（クラスを付け直して再生）
-          flower.classList.remove('is-beat')
-          void flower.offsetWidth
-          flower.classList.add('is-beat')
-        }, STEP)
+
+          if (prog >= 100) finish()
+          else window.requestAnimationFrame(tick)
+        }
+        window.requestAnimationFrame(tick)
 
         var done = false
         function finish() {
           if (done) return
           done = true
-          clearInterval(timer)
+          bar.style.width = '100%'
+          pct.textContent = '100%'
           // 夜に沈む → 花が割れて散る
           curtain.dataset.season = 'night'
           curtain.classList.add('is-sinking')
@@ -478,7 +526,59 @@
           if (!done) curtain.classList.add('is-skippable')
         }, 700)
 
-        window.setTimeout(finish, 2000) // 保険。何があっても2秒で開ける
+        window.setTimeout(finish, 4000) // 保険。回線が遅くても4秒で必ず開ける
+      })()
+
+      // ── 見出しのスクロール出現（2026-08-04本人指示・参考: osushi-san.com） ──
+      // 見出し・リード文が画面に入ったとき、下からすっと立ち上がる。
+      // 隠すクラスはJSが動いてから付ける＝JS無効・IO非対応では最初から見えている
+      ;(function () {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (reduce || !('IntersectionObserver' in window)) return
+        var els = document.querySelectorAll('.heading, .section__lead, .section__foot')
+        els.forEach(function (el) {
+          el.classList.add('will-reveal')
+        })
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting) return
+              e.target.classList.add('is-shown')
+              io.unobserve(e.target) // 一度出たら出っぱなし（戻るたびに消えると煩い）
+            })
+          },
+          { threshold: 0.25, rootMargin: '0px 0px -40px 0px' },
+        )
+        els.forEach(function (el) {
+          io.observe(el)
+        })
+      })()
+
+      // ── ヘッダーナビ：見ているセクションの番号を点す ──
+      ;(function () {
+        var links = {}
+        document.querySelectorAll('.topbar__nav a').forEach(function (a) {
+          links[a.dataset.nav] = a
+        })
+        if (!('IntersectionObserver' in window)) return
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting) return
+              Object.keys(links).forEach(function (k) {
+                links[k].classList.remove('is-active')
+              })
+              var l = links[e.target.id]
+              if (l) l.classList.add('is-active')
+            })
+          },
+          // 画面の上寄り1/3に入ったセクションを「見ている」とみなす
+          { rootMargin: '-25% 0px -65% 0px' },
+        )
+        ;['play', 'about', 'seasons', 'chara', 'author'].forEach(function (id) {
+          var el = document.getElementById(id)
+          if (el) io.observe(el)
+        })
       })()
 
       // ── 四季セクション：見えている里の季節をページ全体へ反映 ──
