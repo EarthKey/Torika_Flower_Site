@@ -98,6 +98,47 @@
     </header>
 
     <main>
+      <!-- ── イメージPV ────────────────────────────
+           制作初期に作ったイメージPV。**中身は3Dで、実際の2Dドット絵の本編とは別物**なので、
+           注釈は再生前に読める位置（動画の上）へ置き、後からも読めるよう下にも要点を残す。
+           容量対策: preload="none" なので、再生ボタンを押すまで9.8MBは一切読み込まれない。
+           サムネイルもPVの映像ではなく自前のロゴ画像（28KB）を使い、誤認を防いでいる -->
+      <section class="section pv-section">
+        <div class="pv">
+          <p class="pv__caution">
+            <strong>これは制作初期に作った「イメージPV」です。</strong><br />
+            実際のゲームとは<strong>絵柄・画面・仕様が大きく異なります</strong>（PVは3D、本編は2Dのドット絵です）。
+            雰囲気づくりの参考としてご覧ください。
+          </p>
+
+          <div class="pv__frame" id="pvFrame">
+            <video
+              class="pv__video"
+              id="pvVideo"
+              src="assets/pv.mp4"
+              poster="assets/pv_poster.webp"
+              controls
+              preload="none"
+              playsinline
+              width="720"
+              height="480"
+            >
+              お使いのブラウザは動画の再生に対応していないようです。
+            </video>
+            <!-- 大きな再生ボタン。ブラウザ標準の小さな再生ボタンだけだと
+                 「押せば見られる」ことが伝わりにくいため重ねている。押したら消える -->
+            <button class="pv__play" type="button" id="pvPlay" aria-label="イメージPVを再生する">
+              <span class="pv__play-icon">▶</span>
+              <span class="pv__play-label">イメージPVを再生</span>
+            </button>
+          </div>
+
+          <p class="pv__note">
+            イメージPV（約2分20秒・音が出ます）／実際の画面は「壱 遊ぶ」でそのまま確かめられます。
+          </p>
+        </div>
+      </section>
+
       <!-- ── 壱：遊ぶ ──────────────────────────── -->
       <section class="section" id="play">
         <h2 class="heading"><span class="heading__num">壱</span>遊ぶ</h2>
@@ -339,6 +380,24 @@
         else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen()
         else alert('お使いのブラウザは全画面表示に対応していないようです。')
       })
+
+      // ── イメージPVの再生ボタン ──────────────────────
+      // preload="none" なので、ここで初めて動画の読み込みが始まる（＝押すまで通信ゼロ）
+      ;(function () {
+        var btn = document.getElementById('pvPlay')
+        var video = document.getElementById('pvVideo')
+        if (!btn || !video) return
+        var hide = function () {
+          btn.classList.add('is-hidden')
+        }
+        btn.addEventListener('click', function () {
+          hide()
+          var r = video.play()
+          // 自動再生扱いで弾かれた場合は、標準の再生ボタンで操作してもらう
+          if (r && r.catch) r.catch(function () {})
+        })
+        video.addEventListener('play', hide)
+      })()
 
       // ── 幕開け ────────────────────────────────
       // 春→夏→秋→冬と一巡してから墨に沈み、花が8枚に割れて散る。
