@@ -169,13 +169,12 @@
             ></iframe>
           </div>
           <div class="play__bar">
+            <!-- 全画面の主導権はゲーム内の「⛶ 全画面」トグルへ移した（2026-08-05・案A）。
+                 親側で全画面化すると全画面中に「元に戻す」ボタンが画面から消えるため。
+                 ここは案内文だけにする -->
             <p class="play__hint">
-              画面を一度クリックしてから、矢印キー／WASDで移動・Spaceで調べる。
+              画面を一度クリックしてから、矢印キー／WASDで移動・Spaceで調べる。全画面はゲーム画面右下の「⛶ 全画面」からどうぞ（ESCで戻れます）。
             </p>
-            <!-- 本物の全画面（iframeのrequestFullscreen）。2026-08-05に一度「新しいタブで開く」へ
-                 変えたが、セーブの一本化はゲーム側のリダイレクト（直接アクセス→この埋め込みへ集約）で
-                 解決したため、全画面はそのまま全画面として復帰 -->
-            <button class="btn btn--kin" type="button" id="fsBtn">⛶ 全画面で遊ぶ</button>
           </div>
 
           <!-- セーブの注意書き（2026-08-05改稿）。遊ぶ場所はこのページに一本化済みなので、
@@ -499,18 +498,7 @@
     </footer>
 
     <script>
-      // ── 全画面ボタン ──────────────────────────────
-      // iframeそのものを全画面にする。セーブは埋め込み内のまま＝一本化が保たれる
-      ;(function () {
-        var fsBtn = document.getElementById('fsBtn')
-        var frame = document.getElementById('gameFrame')
-        if (!fsBtn || !frame) return
-        fsBtn.addEventListener('click', function () {
-          if (frame.requestFullscreen) frame.requestFullscreen()
-          else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen()
-          else alert('お使いのブラウザは全画面表示に対応していないようです。')
-        })
-      })()
+      // 全画面はゲーム内の「⛶ 全画面」トグルが担う（2026-08-05・案A）。親側のJSは無し
 
       // ── イメージPVの再生ボタン ──────────────────────
       // preload="none" なので、ここで初めて動画の読み込みが始まる（＝押すまで通信ゼロ）
