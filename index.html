@@ -172,24 +172,16 @@
             <p class="play__hint">
               画面を一度クリックしてから、矢印キー／WASDで移動・Spaceで調べる。
             </p>
-            <!-- iframe全画面ではなくゲームを新しいタブで開く（2026-08-05変更）。
-                 ブラウザのストレージ分離により、埋め込み内のセーブと直接開いたときの
-                 セーブは別物になるため、本気で遊ぶ人を「常にゲームURL直」へ誘導して
-                 セーブの行き先を一元化する -->
-            <a
-              class="btn btn--kin"
-              id="fsBtn"
-              href="https://torika-flower-sfc.vercel.app/"
-              target="_blank"
-              rel="noopener"
-              >⛶ 全画面で遊ぶ（新しいタブ）</a
-            >
+            <!-- 本物の全画面（iframeのrequestFullscreen）。2026-08-05に一度「新しいタブで開く」へ
+                 変えたが、セーブの一本化はゲーム側のリダイレクト（直接アクセス→この埋め込みへ集約）で
+                 解決したため、全画面はそのまま全画面として復帰 -->
+            <button class="btn btn--kin" type="button" id="fsBtn">⛶ 全画面で遊ぶ</button>
           </div>
 
-          <!-- セーブの注意書き（2026-08-05本人指示）。ストレージ分離の説明は専門的すぎるので、
-               「入口ごとにセーブが分かれる」という現象だけを平語で伝える -->
+          <!-- セーブの注意書き（2026-08-05改稿）。遊ぶ場所はこのページに一本化済みなので、
+               「ブラウザに保存される」ことと「消える操作」だけ伝えれば足りる -->
           <p class="play__save-note">
-            🌸 セーブデータはお使いのブラウザに自動保存されます。このページ内と「全画面（新しいタブ）」ではセーブが別々になるので、続きから遊ぶときは前回と同じ入口からどうぞ。
+            🌸 セーブデータはお使いのブラウザに自動保存されます。同じパソコン・同じブラウザで開けば、いつでも続きから遊べます（ブラウザの履歴・サイトデータを削除すると消えるのでご注意を）。
           </p>
         </div>
 
@@ -507,10 +499,18 @@
     </footer>
 
     <script>
-      // ──（旧）全画面ボタン ────────────────────────────
-      // iframeのrequestFullscreenをやめ、単なる新タブリンクに変更（2026-08-05）。
-      // 理由: ブラウザのストレージ分離で埋め込み内と直接アクセスのセーブが別になるため、
-      // 全画面で遊びたい人＝本気で遊ぶ人をゲームURL直へ誘導してセーブを一元化する
+      // ── 全画面ボタン ──────────────────────────────
+      // iframeそのものを全画面にする。セーブは埋め込み内のまま＝一本化が保たれる
+      ;(function () {
+        var fsBtn = document.getElementById('fsBtn')
+        var frame = document.getElementById('gameFrame')
+        if (!fsBtn || !frame) return
+        fsBtn.addEventListener('click', function () {
+          if (frame.requestFullscreen) frame.requestFullscreen()
+          else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen()
+          else alert('お使いのブラウザは全画面表示に対応していないようです。')
+        })
+      })()
 
       // ── イメージPVの再生ボタン ──────────────────────
       // preload="none" なので、ここで初めて動画の読み込みが始まる（＝押すまで通信ゼロ）
