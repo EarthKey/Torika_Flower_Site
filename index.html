@@ -34,6 +34,21 @@
     />
     <link rel="stylesheet" href="style.css" />
 
+    <!-- タッチ端末の判定（2026-08-06）。スマホ向けの出し分けを画面幅ではなくここで決める。
+         🔴 幅768px以下のメディアクエリだけで判定していたため、**横持ちスマホ（幅844px）では
+         「スマホで遊ぶ」ボタンが消えて iframe 埋め込みが復活していた**。
+         埋め込みは画面高より高く（4:3で603px）ゲーム全体が見えないうえ、
+         埋め込み内のストレージは直接アクセスと別扱いになりセーブが分裂する。
+         CSSより先に効かせたいので head 内のインラインで実行する -->
+    <script>
+      ;(function () {
+        var touch =
+          (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+          navigator.maxTouchPoints > 0
+        if (touch) document.documentElement.classList.add('is-touch')
+      })()
+    </script>
+
     <!-- JSが無効・失敗しても、幕が下りたまま／本文が透明のまま取り残されないようにする -->
     <noscript>
       <style>

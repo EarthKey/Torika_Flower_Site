@@ -1426,3 +1426,20 @@ body[data-season='winter'] { background-color: #14171a; }
     transition: none;
   }
 }
+
+/* ── タッチ端末の出し分け（2026-08-06新設・画面幅では判定しない） ──────────────
+   スマホは横持ちにすると幅844px等になり、`@media (max-width: 768px)` が外れる。
+   その結果 **横持ちだけ「スマホで遊ぶ」ボタンが消えて iframe 埋め込みが復活** していた。
+   埋め込みは 4:3 で高さ603px あり画面高(390px)に収まらないうえ、埋め込み内のストレージは
+   直接アクセスと別扱いになるためセーブが分裂する。
+   判定は head のインラインJSが付ける html.is-touch で行い、向きに関係なく統一する。
+   （メディアクエリは詳細度に影響しないため、クラス2つ分のこちらが確実に勝つ） */
+.is-touch .play__frame,
+.is-touch .play__bar,
+.is-touch .play__save-note {
+  display: none;
+}
+
+.is-touch .mobile-note {
+  display: block;
+}
