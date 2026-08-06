@@ -785,6 +785,22 @@ body.is-ready .petals span {
   font-size: 0.86rem;
 }
 
+/* スマホの「遊ぶ」ボタン（2026-08-06スマホ対応）。ゲームURLへ直接リンクし全画面で遊ばせる */
+.mobile-note__play {
+  display: block;
+  margin: 14px 0 12px;
+  padding: 14px 18px;
+  text-align: center;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--kinari);
+  background: linear-gradient(90deg, rgba(184, 67, 46, 0.85), rgba(150, 40, 28, 0.85));
+  border: 1px solid rgba(255, 214, 150, 0.55);
+  border-radius: 4px;
+  text-decoration: none;
+}
+
 /* ── 弐：どんなゲーム？ ───────────────────────────── */
 .steps {
   list-style: none;
