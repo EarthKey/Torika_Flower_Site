@@ -103,8 +103,8 @@
         <a href="#about" data-nav="about"><span class="topbar__num">弐</span><span class="topbar__label">どんなゲーム？</span></a>
         <a href="#seasons" data-nav="seasons"><span class="topbar__num">参</span><span class="topbar__label">四季</span></a>
         <a href="#chara" data-nav="chara"><span class="topbar__num">肆</span><span class="topbar__label">登場人物</span></a>
-        <a href="#author" data-nav="author"><span class="topbar__num">伍</span><span class="topbar__label">作った人</span></a>
-        <a href="#kit" data-nav="kit"><span class="topbar__num">陸</span><span class="topbar__label">あなたも使える</span></a>
+        <a href="#kit" data-nav="kit"><span class="topbar__num">伍</span><span class="topbar__label">あなたも使える</span></a>
+        <a href="#author" data-nav="author"><span class="topbar__num">陸</span><span class="topbar__label">作った人</span></a>
       </nav>
       <a class="topbar__play btn btn--shu" href="#play">▶ 遊ぶ</a>
     </div>
@@ -429,9 +429,72 @@
         </p>
       </section>
 
-      <!-- ── 伍：作った人 ──────────────────────── -->
+      <!-- ── 伍：このキャラたちは、あなたも使える ────────────────
+           教材への導線（2026-08-06新設）。これまで教材リンクは「伍 作った人」カード内の
+           1行だけで、作者紹介の付属品という弱い置き方だった。遊んだ直後の「このキャラいいな」
+           が最高潮のところに独立した節を置く。
+           🔴 文言の注意: 「誰でも自由に使える」と一括りに書かない。CryptoNinja本体はCC0ではなく、
+           CNPは別ガイドライン。教材本文で「一括りにすると商品化事故につながる」と書いている以上、
+           入口で雑に書くと第1章で矛盾に気づかれる（判断の正本:
+           07_Anime_Studio/NinjaGames/Torika/assets_prompts/漫画_教材導線.md） -->
+      <section class="section" id="kit">
+        <h2 class="heading"><span class="heading__num">伍</span>このキャラたちは、あなたも使える</h2>
+        <p class="section__lead">
+          この里に出てくる忍たちは、わたしのオリジナルキャラクターではありません。
+          NinjaDAOのクリプトニンジャたちに、登場してもらっています。
+        </p>
+
+        <div class="kit">
+          <img
+            class="kit__manga"
+            src="assets/manga_kit.webp"
+            alt="酉花とイズナが、クリプトニンジャは公式のルールの範囲内なら誰でも二次創作していいこと、ただしAIで思ったとおりの姿を出すのは難しいことを話している3コマ漫画"
+            width="1024"
+            height="1536"
+            loading="lazy"
+          />
+
+          <div class="kit__body">
+            <h3 class="kit__h3">🥷 二次創作のルール</h3>
+            <p>
+              クリプトニンジャのキャラクターは、
+              <a href="https://www.ninja-dao.com/guidelines.html" target="_blank" rel="noopener noreferrer">公式の利用ガイドライン</a>
+              の範囲内であれば、二次創作はもちろん商用利用まで認められています（年商2,000万円以内。超える場合は許可制）。
+              このゲームも、そのおかげで作れました。
+            </p>
+            <p class="kit__note">
+              ⚠️ ただし、いわゆる「CC0」＝著作権の放棄ではありません。
+              また <strong>CryptoNinja本体と CryptoNinja Partners（CNP）は別のガイドライン</strong>で、
+              CNPのキャラクターで作ったものは販売・商品化ができません。
+              ふたつを一括りにしないよう、使う前に一度だけ原文に目を通してください。
+            </p>
+
+            <h3 class="kit__h3">🎨 むずかしいのは、そこではなかった</h3>
+            <p>
+              このゲームのキャラクターは、ドット絵も顔グラも、すべてAIで生成しています。
+              けれど実際にやってみると、いちばん手こずったのは「使っていいかどうか」ではなく、
+              <strong>思ったとおりの姿を出すこと</strong>でした。
+            </p>
+            <p>
+              髪の色も、袖の長さも、指示を書き落とすたびに別人になります。
+              そこで、キャラクターの外見を<strong>言葉として持っておく</strong>やり方に切り替えました。
+              その手順と、43体分の言葉をまとめたのが下の教材です。
+            </p>
+
+            <a class="kit__cta" href="https://brmk.io/rnmJcc" target="_blank" rel="noopener noreferrer">
+              <span class="kit__cta-icon">📖</span>
+              <span class="kit__cta-body">
+                <strong>クリプトニンジャAI創作スターターキット</strong>
+                <small>Brain教材 ／ キャラクターを「言葉で持っておく」ための入口</small>
+              </span>
+              <span class="kit__cta-arrow">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- ── 陸：作った人 ──────────────────────── -->
       <section class="section" id="author">
-        <h2 class="heading"><span class="heading__num">伍</span>作った人</h2>
+        <h2 class="heading"><span class="heading__num">陸</span>作った人</h2>
 
         <div class="author">
           <div class="author__name">
@@ -492,69 +555,6 @@
         </div>
       </section>
 
-      <!-- ── 陸：このキャラたちは、あなたも使える ────────────────
-           教材への導線（2026-08-06新設）。これまで教材リンクは「伍 作った人」カード内の
-           1行だけで、作者紹介の付属品という弱い置き方だった。遊んだ直後の「このキャラいいな」
-           が最高潮のところに独立した節を置く。
-           🔴 文言の注意: 「誰でも自由に使える」と一括りに書かない。CryptoNinja本体はCC0ではなく、
-           CNPは別ガイドライン。教材本文で「一括りにすると商品化事故につながる」と書いている以上、
-           入口で雑に書くと第1章で矛盾に気づかれる（判断の正本:
-           07_Anime_Studio/NinjaGames/Torika/assets_prompts/漫画_教材導線.md） -->
-      <section class="section" id="kit">
-        <h2 class="heading"><span class="heading__num">陸</span>このキャラたちは、あなたも使える</h2>
-        <p class="section__lead">
-          この里に出てくる忍たちは、わたしのオリジナルキャラクターではありません。
-          NinjaDAOのクリプトニンジャたちに、登場してもらっています。
-        </p>
-
-        <div class="kit">
-          <img
-            class="kit__manga"
-            src="assets/manga_kit.webp"
-            alt="酉花とイズナが、クリプトニンジャは公式のルールの範囲内なら誰でも二次創作していいこと、ただしAIで思ったとおりの姿を出すのは難しいことを話している3コマ漫画"
-            width="1024"
-            height="1536"
-            loading="lazy"
-          />
-
-          <div class="kit__body">
-            <h3 class="kit__h3">🥷 二次創作のルール</h3>
-            <p>
-              クリプトニンジャのキャラクターは、
-              <a href="https://www.ninja-dao.com/guidelines.html" target="_blank" rel="noopener noreferrer">公式の利用ガイドライン</a>
-              の範囲内であれば、二次創作はもちろん商用利用まで認められています（年商2,000万円以内。超える場合は許可制）。
-              このゲームも、そのおかげで作れました。
-            </p>
-            <p class="kit__note">
-              ⚠️ ただし、いわゆる「CC0」＝著作権の放棄ではありません。
-              また <strong>CryptoNinja本体と CryptoNinja Partners（CNP）は別のガイドライン</strong>で、
-              CNPのキャラクターで作ったものは販売・商品化ができません。
-              ふたつを一括りにしないよう、使う前に一度だけ原文に目を通してください。
-            </p>
-
-            <h3 class="kit__h3">🎨 むずかしいのは、そこではなかった</h3>
-            <p>
-              このゲームのキャラクターは、ドット絵も顔グラも、すべてAIで生成しています。
-              けれど実際にやってみると、いちばん手こずったのは「使っていいかどうか」ではなく、
-              <strong>思ったとおりの姿を出すこと</strong>でした。
-            </p>
-            <p>
-              髪の色も、袖の長さも、指示を書き落とすたびに別人になります。
-              そこで、キャラクターの外見を<strong>言葉として持っておく</strong>やり方に切り替えました。
-              その手順と、43体分の言葉をまとめたのが下の教材です。
-            </p>
-
-            <a class="kit__cta" href="https://brmk.io/rnmJcc" target="_blank" rel="noopener noreferrer">
-              <span class="kit__cta-icon">📖</span>
-              <span class="kit__cta-body">
-                <strong>クリプトニンジャAI創作スターターキット</strong>
-                <small>Brain教材 ／ キャラクターを「言葉で持っておく」ための入口</small>
-              </span>
-              <span class="kit__cta-arrow">↗</span>
-            </a>
-          </div>
-        </div>
-      </section>
     </main>
 
     <footer class="footer">
@@ -739,7 +739,7 @@
           // 画面の上寄り1/3に入ったセクションを「見ている」とみなす
           { rootMargin: '-25% 0px -65% 0px' },
         )
-        ;['play', 'about', 'seasons', 'chara', 'author', 'kit'].forEach(function (id) {
+        ;['play', 'about', 'seasons', 'chara', 'kit', 'author'].forEach(function (id) {
           var el = document.getElementById(id)
           if (el) io.observe(el)
         })
