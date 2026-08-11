@@ -755,6 +755,25 @@ body.is-ready .petals span {
   border-radius: 3px;
 }
 
+/* 遊び方チュートリアル動画（2026-08-11追加）。ゲーム枠のすぐ下に置く。
+   X埋め込みは既定で最大550px・左寄せになるので中央へ寄せる。
+   スマホでは .play__frame 等が消えるが、この動画はスマホ操作も説明しているので出したままにする */
+.play__howto {
+  margin: 18px 0 0;
+}
+
+.play__howto-title {
+  margin: 0 0 10px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--kinari);
+}
+
+.play__howto .twitter-tweet {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .mobile-note {
   display: none; /* 狭い画面でのみ出す */
   margin-top: 22px;

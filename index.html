@@ -193,6 +193,19 @@
             </p>
           </div>
 
+          <!-- 遊び方チュートリアル動画（2026-08-11追加）。
+               Xの投稿を公式埋め込みで読み込む。動画本体は63.7MBあり、リポジトリへ入れると
+               読み込みが重くなるためホスティングはX側に任せる（再生数もX側へ集約される）。
+               スクリプトが読めなかった場合も、中のリンクがそのまま生きる -->
+          <div class="play__howto">
+            <p class="play__howto-title">▶ 遊び方を3分で見る</p>
+            <blockquote class="twitter-tweet" data-lang="ja" data-dnt="true">
+              <a href="https://twitter.com/EarthGigantea/status/2087120072271900942"
+                >遊び方チュートリアル動画をXで見る（@EarthGigantea）</a
+              >
+            </blockquote>
+          </div>
+
           <!-- セーブの注意書き（2026-08-05改稿）。遊ぶ場所はこのページに一本化済みなので、
                「ブラウザに保存される」ことと「消える操作」だけ伝えれば足りる -->
           <p class="play__save-note">
@@ -801,5 +814,7 @@
         update()
       })()
     </script>
+    <!-- X（Twitter）の埋め込みウィジェット。asyncなので他の描画を止めない（2026-08-11追加） -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   </body>
 </html>
