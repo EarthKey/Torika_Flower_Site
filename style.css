@@ -1577,3 +1577,40 @@ body[data-season='winter'] { background-color: #14171a; }
 .is-touch .mobile-note {
   display: block;
 }
+
+/* ── 困ったときのヒント（2026-08-14追加）──────────────────────
+   「どの薬を渡せばいいか分からない」という声への対策として 弐 の末尾に置く。
+   ゲーム内の暗転ヒントと対になっており、配色も金＋朱でHUDに揃えている */
+.tip {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 28px);
+  align-items: center;
+  margin: clamp(24px, 4vw, 36px) 0 0;
+  padding: clamp(18px, 3vw, 26px);
+  background: rgba(42, 35, 26, 0.55);
+  border: 1px solid rgba(201, 162, 74, 0.35);
+  border-radius: 10px;
+}
+.tip__shot {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  border: 1px solid rgba(201, 162, 74, 0.28);
+}
+.tip__title {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  color: var(--kin-light);
+}
+.tip__body p { margin: 0 0 8px; font-size: 0.95rem; color: var(--kinari); }
+.tip__body strong { color: var(--kin-light); }
+.tip__em { color: var(--shu-light); }
+.tip__note { font-size: 0.86rem; color: var(--muted); }
+
+/* 縦に積む（画像が先） */
+@media (max-width: 720px) {
+  .tip { grid-template-columns: 1fr; }
+}
