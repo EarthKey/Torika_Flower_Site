@@ -34,17 +34,25 @@
     />
     <link rel="stylesheet" href="style.css" />
 
-    <!-- タッチ端末の判定（2026-08-06）。スマホ向けの出し分けを画面幅ではなくここで決める。
+    <!-- タッチ端末の判定（2026-08-06 / 2026-09-01修正）。スマホ向けの出し分けを画面幅ではなくここで決める。
          🔴 幅768px以下のメディアクエリだけで判定していたため、**横持ちスマホ（幅844px）では
          「スマホで遊ぶ」ボタンが消えて iframe 埋め込みが復活していた**。
          埋め込みは画面高より高く（4:3で603px）ゲーム全体が見えないうえ、
          埋め込み内のストレージは直接アクセスと別扱いになりセーブが分裂する。
-         CSSより先に効かせたいので head 内のインラインで実行する -->
+         CSSより先に効かせたいので head 内のインラインで実行する。
+
+         🔴 2026-09-01: **`navigator.maxTouchPoints > 0` で判定してはいけない**。
+         Windowsのブラウザは、タッチパネルの無いデスクトップでもデジタイザ等が登録されているだけで
+         maxTouchPoints に 10 を返す（このPCのChromiumで実測10・pointer:coarse は false）。
+         結果 `.is-touch` が全PCに付き、**style.css の `.is-touch .play__frame{display:none}` が発火して
+         壱「遊ぶ」のゲーム埋め込みが丸ごと消えていた**（2026-08-06〜09-01）。
+         判定は `(hover: none) and (pointer: coarse)` の1本にする。
+         「マウスが無く、指が主ポインタ」＝本物のスマホ・タブレットだけが true になり、
+         タッチ対応PCは false、8/6に直した横持ちスマホは true のまま（4環境で実測確認済み）。 -->
     <script>
       ;(function () {
         var touch =
-          (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
-          navigator.maxTouchPoints > 0
+          !!window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches
         if (touch) document.documentElement.classList.add('is-touch')
       })()
     </script>
