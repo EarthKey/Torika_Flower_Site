@@ -3,7 +3,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const legacy=process.argv.includes('--vercel');
-const pendingLegacy=process.argv.includes('--pending-legacy');
+// Remain conservative by default. Only enable export links after the legacy production deployment is verified.
+const pendingLegacy=!process.argv.includes('--legacy-ready');
 const output=legacy?'dist-vercel':'dist';
 await mkdir(path.join(root,output),{recursive:true});
 let html=await readFile(path.join(root,'index.html'),'utf8');
