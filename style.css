@@ -1614,3 +1614,6 @@ body[data-season='winter'] { background-color: #14171a; }
 @media (max-width: 720px) {
   .tip { grid-template-columns: 1fr; }
 }
+
+/* Migration notice: existing gold and cream game palette. */
+.migration-note{border:1px solid #c9a24a;background:rgba(38,24,12,.88);color:#f2e6c8;padding:16px 20px;margin:24px 0;border-radius:8px;line-height:1.8;overflow-wrap:anywhere}.migration-note p{margin:.6em 0}.migration-note a{color:#c9a24a;text-decoration:underline}
